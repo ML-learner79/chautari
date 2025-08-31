@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepali Learning Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 3.8em; /* Slightly larger for main title */
+            color: #2e7d32; /* Darker green */
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.8em;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .main-navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab-button {
+            background-color: #4CAF50; /* Green tab */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .nav-tab-button:hover {
+            background-color: #43A047;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab-button.active-tab {
+            background-color: #2e7d32; /* Darker green for active tab */
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .app-container {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .module-content {
+            display: none; /* Hidden by default */
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .module-content.active {
+            display: flex; /* Show active module */
+        }
+
+        .main-display {
+            background-color: #e8f5e9;
+            border: 3px solid #81c784;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            width: 90%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-title {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-size: 10em; /* Alphabet char */
+            font-weight: bold;
+            color: #2e7d32;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        /* Specific styles for color and sentence display in main area */
+        .module-alphabet .main-title { font-size: 10em; }
+        .module-colors .main-title { font-size: 6em; }
+        .module-sentences .main-title { font-size: 3.5em; }
+
+
+        .sub-text-romanized {
+            font-size: 2.5em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .sub-text-english {
+            font-size: 2em;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .visual-element {
+            max-width: 180px;
+            max-height: 180px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            object-fit: contain;
+            background-color: #ffffff;
+            padding: 5px;
+        }
+        .color-swatch-display {
+            width: 200px;
+            height: 200px;
+            border-radius: 15px;
+            border: 3px solid rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: background-color 0.3s ease;
+        }
+
+
+        .play-sound-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-sound-button:hover {
+            background-color: #1976D2;
+        }
+
+        .play-sound-button svg {
+            fill: white;
+            width: 24px;
+            height: 24px;
+        }
+
+        .navigation-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-button, .shuffle-button {
+            background-color: #607D8B;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button:hover, .shuffle-button:hover {
+            background-color: #455A64;
+        }
+
+        .grid-section {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 2px solid #81c784;
+            padding-bottom: 5px;
+        }
+
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Default for alphabet/colors */
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .learning-grid.sentences-grid {
+             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Wider for sentences */
+        }
+
+
+        .grid-item-button {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 0; /* Default padding for characters */
+            font-family: 'Noto Sans Devangari', 'Mukta', sans-serif; /* Prioritize Noto Sans Devanagari for grids too */
+            font-size: 2em; /* Default for alphabet char */
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .grid-item-button.alphabet { font-size: 2em; padding: 15px 0; }
+        .grid-item-button.color { font-size: 1.5em; min-height: 80px; padding: 10px 5px; }
+        .grid-item-button.sentence { font-size: 0.9em; padding: 15px; line-height: 1.4; }
+
+
+        /* Alphabet specific styles */
+        .grid-item-button.vowel {
+            background-color: #ffe0b2; /* Light orange */
+            color: #e65100; /* Darker orange text */
+        }
+        .grid-item-button.vowel:hover {
+            background-color: #ffcc80;
+            transform: translateY(-2px);
+        }
+        .grid-item-button.vowel.active {
+            background-color: #ff9800; /* Highlight orange */
+            color: white;
+            border: 3px solid #e65100;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: scale(1.05);
+        }
+
+        .grid-item-button.consonant {
+            background-color: #e0f2f7; /* Light blue */
+            color: #01579B; /* Darker blue text */
+        }
+        .grid-item-button.consonant:hover {
+            background-color: #b3e5fc;
+            transform: translateY(-2px);
+        }
+        .grid-item-button.consonant.active {
+            background-color: #29b6f6; /* Highlight blue */
+            color: white;
+            border: 3px solid #01579B;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: scale(1.05);
+        }
+
+        /* Color grid item button specific styles */
+        .grid-item-button.color {
+            border: 2px solid rgba(0,0,0,0.1); /* Default border for color buttons */
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5); /* For visibility on dark colors */
+        }
+        .grid-item-button.color.active {
+            border: 4px solid #4CAF50; /* Active highlight */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+         /* Special text color for dark backgrounds to ensure readability in color grid */
+        .grid-item-button.color[data-hex="#000000"],
+        .grid-item-button.color[data-hex="#0000FF"],
+        .grid-item-button.color[data-hex="#800080"],
+        .grid-item-button.color[data-hex="#008000"], /* Dark Green */
+        .grid-item-button.color[data-hex="#00008B"]
+        {
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+
+        /* Sentence grid item button specific styles */
+        .grid-item-button.sentence {
+            background-color: #e0f2f7; /* Light blue */
+            color: #01579B; /* Darker blue text */
+        }
+        .grid-item-button.sentence:hover {
+            background-color: #b3e5fc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .grid-item-button.sentence.active {
+            background-color: #29b6f6; /* Highlight blue */
+            color: white;
+            border: 3px solid #01579B;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.8em; }
+            .header p { font-size: 1.4em; }
+            .main-navigation { gap: 10px; }
+            .nav-tab-button { padding: 10px 20px; font-size: 1.2em; }
+            .app-container { padding: 20px; width: 95%; }
+            .main-display { padding: 20px; }
+
+            .module-alphabet .main-title { font-size: 6em; }
+            .module-colors .main-title { font-size: 4em; }
+            .module-sentences .main-title { font-size: 2.5em; }
+
+            .sub-text-romanized { font-size: 1.8em; }
+            .sub-text-english { font-size: 1.5em; }
+            .visual-element { max-width: 120px; max-height: 120px; }
+            .color-swatch-display { width: 150px; height: 150px; }
+            .play-sound-button { padding: 12px 25px; font-size: 1.2em; }
+            .navigation-controls { gap: 10px; }
+            .nav-button, .shuffle-button { padding: 10px 20px; font-size: 1em; }
+            .section-title { font-size: 1.5em; }
+            .learning-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+            .learning-grid.sentences-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .grid-item-button.alphabet { font-size: 1.5em; padding: 10px 0; }
+            .grid-item-button.color { font-size: 1.2em; min-height: 70px; padding: 8px 5px; }
+            .grid-item-button.sentence { font-size: 0.8em; padding: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 2.2em; }
+            .header p { font-size: 1.0em; }
+            .main-navigation { flex-direction: column; }
+            .nav-tab-button { padding: 10px 15px; font-size: 1.1em; }
+            .app-container { padding: 15px; }
+            .main-display { padding: 15px; }
+
+            .module-alphabet .main-title { font-size: 4em; }
+            .module-colors .main-title { font-size: 3em; }
+            .module-sentences .main-title { font-size: 1.8em; }
+
+            .sub-text-romanized { font-size: 1.4em; }
+            .sub-text-english { font-size: 1.2em; }
+            .visual-element { max-width: 80px; max-height: 80px; }
+            .color-swatch-display { width: 100px; height: 100px; }
+            .play-sound-button { padding: 8px 18px; font-size: 1em; }
+            .navigation-controls { flex-direction: column; gap: 8px; }
+            .nav-button, .shuffle-button { padding: 8px 18px; font-size: 0.9em; }
+            .section-title { font-size: 1.2em; }
+            .learning-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
+            .learning-grid.sentences-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .grid-item-button.alphabet { font-size: 1.2em; padding: 8px 0; }
+            .grid-item-button.color { font-size: 1em; min-height: 60px; padding: 5px; }
+            .grid-item-button.sentence { font-size: 0.7em; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>नेपाली सिक्ने केन्द्र</h1>
+        <p>(Nepali Learning Hub)</p>
+    </div>
+
+    <div class="main-navigation">
+        <button class="nav-tab-button active-tab" data-module="alphabet">Alphabet</button>
+        <button class="nav-tab-button" data-module="colors">Colors</button>
+        <button class="nav-tab-button" data-module="sentences">Sentences</button>
+    </div>
+
+    <div class="app-container">
+        <!-- ALPHABET LEARNING MODULE -->
+        <div id="alphabetModule" class="module-content active">
+            <div class="main-display module-alphabet">
+                <div id="mainAlphabetCharacter" class="main-title">अ</div>
+                <div id="alphabetExampleWord" class="sub-text-romanized">अमिलो (Amilo)</div>
+                <img id="alphabetWordImage" src="images/amilo.png" alt="Image for Amilo" class="visual-element">
+                <button id="playAlphabetSoundBtn" class="play-sound-button">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    Play Sound
+                </button>
+                <audio id="alphabetAudioPlayer" src=""></audio>
+            </div>
+
+            <div class="navigation-controls">
+                <button id="previousAlphabetBtn" class="nav-button">← Previous</button>
+                <button id="nextAlphabetBtn" class="nav-button">Next →</button>
+            </div>
+
+            <div class="grid-section">
+                <h2 class="section-title">स्वर वर्ण (Vowels)</h2>
+                <div id="vowelGrid" class="learning-grid">
+                    <!-- Vowel buttons will be inserted here by JavaScript -->
+                </div>
+
+                <h2 class="section-title">व्यंजन वर्ण (Consonants)</h2>
+                <div id="consonantGrid" class="learning-grid">
+                    <!-- Consonant buttons will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- COLORS LEARNING MODULE -->
+        <div id="colorsModule" class="module-content">
+            <div class="main-display module-colors">
+                <div id="colorNameNepali" class="main-title">रातो</div>
+                <div id="colorNameRomanized" class="sub-text-romanized">Rato</div>
+                <div id="colorNameEnglish" class="sub-text-english">Red</div>
+                <div id="colorSwatch" class="color-swatch-display" style="background-color: #FF0000;"></div>
+                <button id="playColorSoundBtn" class="play-sound-button">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    Play Sound
+                </button>
+                <audio id="colorAudioPlayer" src=""></audio>
+            </div>
+
+            <div class="navigation-controls">
+                <button id="previousColorBtn" class="nav-button">← Previous</button>
+                <button id="nextColorBtn" class="nav-button">Next →</button>
+            </div>
+
+            <div class="grid-section">
+                <h2 class="section-title">सबै रङहरू (All Colors)</h2>
+                <div id="colorGrid" class="learning-grid">
+                    <!-- Color buttons will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- SENTENCES LEARNING MODULE -->
+        <div id="sentencesModule" class="module-content">
+            <div class="main-display module-sentences">
+                <div id="sentenceNepali" class="main-title">नमस्ते!</div>
+                <div id="sentenceRomanized" class="sub-text-romanized">Namaste!</div>
+                <div id="sentenceEnglish" class="sub-text-english">Hello!</div>
+                <button id="playSentenceSoundBtn" class="play-sound-button">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    Play Sound
+                </button>
+                <audio id="sentenceAudioPlayer" src=""></audio>
+            </div>
+
+            <div class="navigation-controls">
+                <button id="previousSentenceBtn" class="nav-button">← Previous</button>
+                <button id="shuffleSentencesBtn" class="shuffle-button">Shuffle Sentences</button>
+                <button id="nextSentenceBtn" class="nav-button">Next →</button>
+            </div>
+
+            <div class="grid-section">
+                <h2 class="section-title">सबै वाक्यहरू (All Sentences)</h2>
+                <div id="sentencesGrid" class="learning-grid sentences-grid">
+                    <!-- Sentence buttons will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA FOR ALL MODULES ---
+        const nepaliAlphabet = [
+            // Vowels (स्वर वर्ण - Swor Barna)
+            // Note: Audio paths are now for individual letter sounds (e.g., 'a.mp3')
+            { char: 'अ', type: 'vowel', exampleWord: 'अमिलो (Amilo)', audio: 'audio/a.mp3', image: 'images/amilo.png' },
+            { char: 'आ', type: 'vowel', exampleWord: 'आलु (Aalu)', audio: 'audio/aa.mp3', image: 'images/aalu.png' },
+            { char: 'इ', type: 'vowel', exampleWord: 'इँटा (Inta)', audio: 'audio/i.mp3', image: 'images/inta.png' },
+            { char: 'ई', type: 'vowel', exampleWord: 'ईश्वर (Ishwar)', audio: 'audio/ee.mp3', image: 'images/ishwar.png' },
+            { char: 'उ', type: 'vowel', exampleWord: 'उज्यालो (Ujyalo)', audio: 'audio/u.mp3', image: 'images/ujyalo.png' },
+            { char: 'ऊ', type: 'vowel', exampleWord: 'ऊखु (Ookhu)', audio: 'audio/oo.mp3', image: 'images/ookhu.png' },
+            { char: 'ऋ', type: 'vowel', exampleWord: 'ऋषि (Rishi)', audio: 'audio/ri.mp3', image: 'images/rishi.png' },
+            { char: 'ए', type: 'vowel', exampleWord: 'एक (Ek)', audio: 'audio/e.mp3', image: 'images/ek.png' },
+            { char: 'ऐ', type: 'vowel', exampleWord: 'ऐना (Aina)', audio: 'audio/ai.mp3', image: 'images/aina.png' },
+            { char: 'ओ', type: 'vowel', exampleWord: 'ओठ (Oth)', audio: 'audio/o.mp3', image: 'images/oth.png' },
+            { char: 'औ', type: 'vowel', exampleWord: 'औषधी (Aushadhi)', audio: 'audio/au.mp3', image: 'images/aushadhi.png' },
+            { char: 'अं', type: 'vowel', exampleWord: 'अंगूर (Angur)', audio: 'audio/am.mp3', image: 'images/angur.png' },
+            { char: 'अः', type: 'vowel', exampleWord: 'अतः (Atha)', audio: 'audio/ah.mp3', image: 'images/atha.png' },
+            // Consonants (व्यंजन वर्ण - Byanjan Barna)
+            { char: 'क', type: 'consonant', exampleWord: 'कलम (Kalam)', audio: 'audio/ka.mp3', image: 'images/kalam.png' },
+            { char: 'ख', type: 'consonant', exampleWord: 'खरायो (Kharayo)', audio: 'audio/kha.mp3', image: 'images/kharayo.png' },
+            { char: 'ग', type: 'consonant', exampleWord: 'गाइ (Gai)', audio: 'audio/ga.mp3', image: 'images/gai.png' },
+            { char: 'घ', type: 'consonant', exampleWord: 'घर (Ghar)', audio: 'audio/gha.mp3', image: 'images/ghar.png' },
+            { char: 'ङ', type: 'consonant', exampleWord: 'चंगा (Changa)', audio: 'audio/nga.mp3', image: 'images/changa.png' },
+            { char: 'च', type: 'consonant', exampleWord: 'चरा (Chara)', audio: 'audio/cha.mp3', image: 'images/chara.png' },
+            { char: 'छ', type: 'consonant', exampleWord: 'छाता (Chhata)', audio: 'audio/chha.mp3', image: 'images/chhata.png' },
+            { char: 'ज', type: 'consonant', exampleWord: 'जहाज (Jahaj)', audio: 'audio/ja.mp3', image: 'images/jahaj.png' },
+            { char: 'झ', type: 'consonant', exampleWord: 'झण्डा (Jhanda)', audio: 'audio/jha.mp3', image: 'images/jhanda.png' },
+            { char: 'ञ', type: 'consonant', exampleWord: 'विज्ञान (Bigyan)', audio: 'audio/nya.mp3', image: 'images/bigyan.png' },
+            { char: 'ट', type: 'consonant', exampleWord: 'टोल (Tol)', audio: 'audio/ta_retroflex.mp3', image: 'images/tol.png' },
+            { char: 'ठ', type: 'consonant', exampleWord: 'ठेला (Thela)', audio: 'audio/tha_retroflex.mp3', image: 'images/thela.png' },
+            { char: 'ड', type: 'consonant', exampleWord: 'डाँडा (Danda)', audio: 'audio/da_retroflex.mp3', image: 'images/danda.png' },
+            { char: 'ढ', type: 'consonant', exampleWord: 'ढुंगा (Dhunga)', audio: 'audio/dha_retroflex.mp3', image: 'images/dhunga.png' },
+            { char: 'ण', type: 'consonant', exampleWord: 'गणेश (Ganesh)', audio: 'audio/na_retroflex.mp3', image: 'images/ganesh.png' },
+            { char: 'त', type: 'consonant', exampleWord: 'तराई (Tarai)', audio: 'audio/ta.mp3', image: 'images/tarai.png' },
+            { char: 'थ', type: 'consonant', exampleWord: 'थैली (Thaili)', audio: 'audio/tha.mp3', image: 'images/thaili.png' },
+            { char: 'द', type: 'consonant', exampleWord: 'दाम (Dam)', audio: 'audio/da.mp3', image: 'images/dam.png' },
+            { char: 'ध', type: 'consonant', exampleWord: 'धन (Dhan)', audio: 'audio/dha.mp3', image: 'images/dhan.png' },
+            { char: 'न', type: 'consonant', exampleWord: 'नाक (Naak)', audio: 'audio/na.mp3', image: 'images/naak.png' },
+            { char: 'प', type: 'consonant', exampleWord: 'पानी (Pani)', audio: 'audio/pa.mp3', image: 'images/pani.png' },
+            { char: 'फ', type: 'consonant', exampleWord: 'फूल (Phool)', audio: 'audio/pha.mp3', image: 'images/phool.png' },
+            { char: 'ब', type: 'consonant', exampleWord: 'बाघ (Bagh)', audio: 'audio/ba.mp3', image: 'images/bagh.png' },
+            { char: 'भ', type: 'consonant', exampleWord: 'भेडा (Bheda)', audio: 'audio/bha.mp3', image: 'images/bheda.png' },
+            { char: 'म', type: 'consonant', exampleWord: 'माछा (Macha)', audio: 'audio/ma.mp3', image: 'images/macha.png' },
+            { char: 'य', type: 'consonant', exampleWord: 'याद (Yaad)', audio: 'audio/ya.mp3', image: 'images/yaad.png' },
+            { char: 'र', type: 'consonant', exampleWord: 'रात (Raat)', audio: 'audio/ra.mp3', image: 'images/raat.png' },
+            { char: 'ल', type: 'consonant', exampleWord: 'लामा (Lama)', audio: 'audio/la.mp3', image: 'images/lama.png' },
+            { char: 'व', type: 'consonant', exampleWord: 'वन (Ban)', audio: 'audio/va.mp3', image: 'images/ban.png' },
+            { char: 'श', type: 'consonant', exampleWord: 'शंख (Shankha)', audio: 'audio/sha_palatal.mp3', image: 'images/shankha.png' },
+            { char: 'ष', type: 'consonant', exampleWord: 'षट्कोण (Shatkon)', audio: 'audio/sha_retroflex.mp3', image: 'images/shatkon.png' },
+            { char: 'स', type: 'consonant', exampleWord: 'सफा (Safa)', audio: 'audio/sa.mp3', image: 'images/safa.png' },
+            { char: 'ह', type: 'consonant', exampleWord: 'हात (Haat)', audio: 'audio/ha.mp3', image: 'images/haat.png' },
+            { char: 'क्ष', type: 'consonant', exampleWord: 'क्षमा (Kshama)', audio: 'audio/ksha.mp3', image: 'images/ksha.png' },
+            { char: 'त्र', type: 'consonant', exampleWord: 'पत्र (Patra)', audio: 'audio/tra.mp3', image: 'images/patra.png' },
+            { char: 'ज्ञ', type: 'consonant', exampleWord: 'ज्ञान (Gyan)', audio: 'audio/gya.mp3', image: 'images/gyan.png' }
+        ];
+
+        const nepaliColors = [
+            { nepali: 'रातो', romanized: 'Rato', english: 'Red', audio: 'audio/rato.mp3', hex: '#FF0000' },
+            { nepali: 'नीलो', romanized: 'Nilo', english: 'Blue', audio: 'audio/nilo.mp3', hex: '#0000FF' },
+            { nepali: 'पहेँलो', romanized: 'Pahelo', english: 'Yellow', audio: 'audio/pahelo.mp3', hex: '#FFFF00' },
+            { nepali: 'हरियो', romanized: 'Hariyo', english: 'Green', audio: 'audio/hariyo.mp3', hex: '#008000' },
+            { nepali: 'कालो', romanized: 'Kalo', english: 'Black', audio: 'audio/kalo.mp3', hex: '#000000' },
+            { nepali: 'सेतो', romanized: 'Seto', english: 'White', audio: 'audio/seto.mp3', hex: '#FFFFFF' },
+            { nepali: 'सुन्तला रङ', romanized: 'Suntala Rang', english: 'Orange', audio: 'audio/suntala_rang.mp3', hex: '#FFA500' },
+            { nepali: 'गुलाबी', romanized: 'Gulabi', english: 'Pink', audio: 'audio/gulabi.mp3', hex: '#FFC0CB' },
+            { nepali: 'बैजनी', romanized: 'Baijani', english: 'Purple', audio: 'audio/baijani.mp3', hex: '#800080' },
+            { nepali: 'खैरो', romanized: 'Khairo', english: 'Brown', audio: 'audio/khairo.mp3', hex: '#A52A2A' },
+            { nepali: 'फुस्रो', romanized: 'Phusro', english: 'Grey', audio: 'audio/phusro.mp3', hex: '#808080' },
+            { nepali: 'सुनौलो', romanized: 'Sunaulo', english: 'Golden', audio: 'audio/sunaulo.mp3', hex: '#FFD700' },
+            { nepali: 'चाँदी रङ', romanized: 'Chandi Rang', english: 'Silver', audio: 'audio/chandi_rang.mp3', hex: '#C0C0C0' },
+            { nepali: 'नीलो हरियो', romanized: 'Nilo Hariyo', english: 'Teal', audio: 'audio/nilo_hariyo.mp3', hex: '#008080' },
+            { nepali: 'गाढा नीलो', romanized: 'Gadhaa Nilo', english: 'Dark Blue', audio: 'audio/gadhaa_nilo.mp3', hex: '#00008B' },
+            { nepali: 'हलुका हरियो', romanized: 'Haluka Hariyo', english: 'Light Green', audio: 'audio/haluka_hariyo.mp3', hex: '#90EE90' },
+        ];
+
+        const nepaliSentences = [
+            { nepali: 'नमस्ते!', romanized: 'Namaste!', english: 'Hello!', audio: 'audio/namaste.mp3' },
+            { nepali: 'शुभ प्रभात!', romanized: 'Shubha Prabhat!', english: 'Good morning!', audio: 'audio/shubha_prabhat.mp3' },
+            { nepali: 'शुभ साँझ!', romanized: 'Shubha Saanjh!', english: 'Good evening!', audio: 'audio/shubha_saanjh.mp3' },
+            { nepali: 'तपाईँलाई कस्तो छ?', romanized: 'Tapaainlai kasto chha?', english: 'How are you?', audio: 'audio/tapaainlai_kasto_chha.mp3' },
+            { nepali: 'म ठीक छु।', romanized: 'Ma thik chhu.', english: 'I am fine.', audio: 'audio/ma_thik_chhu.mp3' },
+            { nepali: 'धन्यवाद।', romanized: 'Dhanyabaad.', english: 'Thank you.', audio: 'audio/dhanyabaad.mp3' },
+            { nepali: 'यो के हो?', romanized: 'Yo ke ho?', english: 'What is this?', audio: 'audio/yo_ke_ho.mp3' },
+            { nepali: 'यो किताब हो।', romanized: 'Yo kitaab ho.', english: 'This is a book.', audio: 'audio/yo_kitaab_ho.mp3' },
+            { nepali: 'हो।', romanized: 'Ho.', english: 'Yes.', audio: 'audio/ho.mp3' },
+            { nepali: 'होइन।', romanized: 'Hoina.', english: 'No.', audio: 'audio/hoina.mp3' },
+            { nepali: 'फेरि भेटौला।', romanized: 'Pheri bhetaula.', english: 'See you again.', audio: 'audio/pheri_bhetaula.mp3' },
+            { nepali: 'मलाई पानी दिनुहोस्।', romanized: 'Malaai paani dinuhos.', english: 'Give me water.', audio: 'audio/malaai_paani_dinuhos.mp3' },
+            { nepali: 'म खेल्छु।', romanized: 'Ma khelchhu.', english: 'I play.', audio: 'audio/ma_khelchhu.mp3' },
+            { nepali: 'खाना खानुहोस्।', romanized: 'Khaana khaanuhoos.', english: 'Eat food.', audio: 'audio/khaana_khaanuhoos.mp3' },
+            { nepali: 'यो सुन्दर छ।', romanized: 'Yo sundar chha.', english: 'This is beautiful.', audio: 'audio/yo_sundar_chha.mp3' }
+        ];
+
+        // --- GLOBAL APP VARIABLES ---
+        const moduleTabs = document.querySelectorAll('.nav-tab-button');
+        const moduleContents = document.querySelectorAll('.module-content');
+
+        // --- ALPHABET MODULE VARIABLES ---
+        let alphabetCurrentIndex = 0;
+        const mainAlphabetCharacterDiv = document.getElementById('mainAlphabetCharacter');
+        const alphabetExampleWordDiv = document.getElementById('alphabetExampleWord');
+        const alphabetWordImage = document.getElementById('alphabetWordImage');
+        const playAlphabetSoundBtn = document.getElementById('playAlphabetSoundBtn');
+        const alphabetAudioPlayer = document.getElementById('alphabetAudioPlayer');
+        const previousAlphabetBtn = document.getElementById('previousAlphabetBtn');
+        const nextAlphabetBtn = document.getElementById('nextAlphabetBtn');
+        const vowelGrid = document.getElementById('vowelGrid');
+        const consonantGrid = document.getElementById('consonantGrid');
+
+        // --- COLORS MODULE VARIABLES ---
+        let colorCurrentIndex = 0;
+        const colorNameNepaliDiv = document.getElementById('colorNameNepali');
+        const colorNameRomanizedDiv = document.getElementById('colorNameRomanized');
+        const colorNameEnglishDiv = document.getElementById('colorNameEnglish');
+        const colorSwatchDiv = document.getElementById('colorSwatch');
+        const playColorSoundBtn = document.getElementById('playColorSoundBtn');
+        const colorAudioPlayer = document.getElementById('colorAudioPlayer');
+        const previousColorBtn = document.getElementById('previousColorBtn');
+        const nextColorBtn = document.getElementById('nextColorBtn');
+        const colorGrid = document.getElementById('colorGrid');
+
+        // --- SENTENCES MODULE VARIABLES ---
+        let sentenceCurrentIndex = 0;
+        let shuffledSentences = [...nepaliSentences]; // Create a copy for shuffling
+        const sentenceNepaliDiv = document.getElementById('sentenceNepali');
+        const sentenceRomanizedDiv = document.getElementById('sentenceRomanized');
+        const sentenceEnglishDiv = document.getElementById('sentenceEnglish');
+        const playSentenceSoundBtn = document.getElementById('playSentenceSoundBtn');
+        const sentenceAudioPlayer = document.getElementById('sentenceAudioPlayer');
+        const previousSentenceBtn = document.getElementById('previousSentenceBtn');
+        const nextSentenceBtn = document.getElementById('nextSentenceBtn');
+        const shuffleSentencesBtn = document.getElementById('shuffleSentencesBtn');
+        const sentencesGrid = document.getElementById('sentencesGrid');
+
+
+        // --- UTILITY FUNCTIONS ---
+        function stopAllAudio() {
+            [alphabetAudioPlayer, colorAudioPlayer, sentenceAudioPlayer].forEach(player => {
+                if (player && !player.paused) {
+                    player.pause();
+                    player.currentTime = 0;
+                }
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+
+        // --- ALPHABET MODULE FUNCTIONS ---
+        function playAlphabetLetterSound() { // Renamed function
+            stopAllAudio();
+            const charData = nepaliAlphabet[alphabetCurrentIndex];
+            if (charData.audio) {
+                alphabetAudioPlayer.src = charData.audio;
+                alphabetAudioPlayer.play().catch(e => console.error("Alphabet letter sound play failed:", e));
+            } else {
+                console.warn(`Alphabet letter sound file not specified or found for letter: "${charData.char}".`);
+            }
+        }
+
+        function displayAlphabetCharacter(index) {
+            if (index >= 0 && index < nepaliAlphabet.length) {
+                alphabetCurrentIndex = index;
+                const charData = nepaliAlphabet[alphabetCurrentIndex];
+                mainAlphabetCharacterDiv.textContent = charData.char;
+                alphabetExampleWordDiv.textContent = charData.exampleWord;
+                alphabetWordImage.src = charData.image;
+                alphabetWordImage.alt = `Image for ${charData.exampleWord}`;
+                updateAlphabetGridHighlight();
+            }
+        }
+
+        function updateAlphabetGridHighlight() {
+            document.querySelectorAll('#vowelGrid .grid-item-button, #consonantGrid .grid-item-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const currentButton = document.querySelector(`.grid-item-button.alphabet[data-index="${alphabetCurrentIndex}"]`);
+            if (currentButton) {
+                currentButton.classList.add('active');
+            }
+        }
+
+        function createAlphabetGrid() {
+            nepaliAlphabet.forEach((charData, index) => {
+                const button = document.createElement('button');
+                button.classList.add('grid-item-button', 'alphabet', charData.type);
+                button.textContent = charData.char;
+                button.dataset.index = index;
+                button.addEventListener('click', () => {
+                    displayAlphabetCharacter(index);
+                    playAlphabetLetterSound(); // Play letter sound when clicked in the grid
+                });
+
+                if (charData.type === 'vowel') {
+                    vowelGrid.appendChild(button);
+                } else {
+                    consonantGrid.appendChild(button);
+                }
+            });
+        }
+
+
+        // --- COLORS MODULE FUNCTIONS ---
+        function playColorAudio() {
+            stopAllAudio();
+            const colorData = nepaliColors[colorCurrentIndex];
+            if (colorData.audio) {
+                colorAudioPlayer.src = colorData.audio;
+                colorAudioPlayer.play().catch(e => console.error("Color audio play failed:", e));
+            } else {
+                console.warn(`Color audio file not specified or found for: "${colorData.nepali}".`);
+            }
+        }
+
+        function displayColor(index) {
+            if (index >= 0 && index < nepaliColors.length) {
+                colorCurrentIndex = index;
+                const colorData = nepaliColors[colorCurrentIndex];
+                colorNameNepaliDiv.textContent = colorData.nepali;
+                colorNameRomanizedDiv.textContent = colorData.romanized;
+                colorNameEnglishDiv.textContent = colorData.english;
+                colorSwatchDiv.style.backgroundColor = colorData.hex;
+                updateColorGridHighlight();
+            }
+        }
+
+        function updateColorGridHighlight() {
+            document.querySelectorAll('#colorGrid .grid-item-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const currentButton = document.querySelector(`.grid-item-button.color[data-index="${colorCurrentIndex}"]`);
+            if (currentButton) {
+                currentButton.classList.add('active');
+            }
+        }
+
+        function createColorGrid() {
+            nepaliColors.forEach((colorData, index) => {
+                const button = document.createElement('button');
+                button.classList.add('grid-item-button', 'color');
+                button.textContent = colorData.nepali;
+                button.dataset.index = index;
+                button.dataset.hex = colorData.hex;
+                button.style.backgroundColor = colorData.hex;
+
+                const hexValue = colorData.hex.substring(1);
+                const r = parseInt(hexValue.substring(0, 2), 16);
+                const g = parseInt(hexValue.substring(2, 4), 16);
+                const b = parseInt(hexValue.substring(4, 6), 16);
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                if (luminance < 0.5) {
+                    button.style.color = 'white';
+                    button.style.textShadow = '1px 1px 2px rgba(0,0,0,0.7)';
+                } else {
+                    button.style.color = '#333';
+                    button.style.textShadow = '1px 1px 2px rgba(255,255,255,0.5)';
+                }
+
+                button.addEventListener('click', () => {
+                    displayColor(index);
+                    playColorAudio();
+                });
+                colorGrid.appendChild(button);
+            });
+        }
+
+
+        // --- SENTENCES MODULE FUNCTIONS ---
+        function playSentenceAudio() {
+            stopAllAudio();
+            const sentenceData = shuffledSentences[sentenceCurrentIndex];
+            if (sentenceData.audio) {
+                sentenceAudioPlayer.src = sentenceData.audio;
+                sentenceAudioPlayer.play().catch(e => console.error("Sentence audio play failed:", e));
+            } else {
+                console.warn(`Sentence audio file not specified or found for: "${sentenceData.nepali}".`);
+            }
+        }
+
+        function displaySentence(index) {
+            if (index >= 0 && index < shuffledSentences.length) {
+                sentenceCurrentIndex = index;
+                const sentenceData = shuffledSentences[sentenceCurrentIndex];
+                sentenceNepaliDiv.textContent = sentenceData.nepali;
+                sentenceRomanizedDiv.textContent = sentenceData.romanized;
+                sentenceEnglishDiv.textContent = sentenceData.english;
+                updateSentenceGridHighlight();
+            }
+        }
+
+        function updateSentenceGridHighlight() {
+            document.querySelectorAll('#sentencesGrid .grid-item-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            const currentSentenceInOriginal = shuffledSentences[sentenceCurrentIndex];
+            const originalIndex = nepaliSentences.findIndex(s => s.nepali === currentSentenceInOriginal.nepali);
+
+            const currentButton = document.querySelector(`.grid-item-button.sentence[data-original-index="${originalIndex}"]`);
+            if (currentButton) {
+                currentButton.classList.add('active');
+            }
+        }
+
+        function createSentencesGrid() {
+            sentencesGrid.innerHTML = '';
+            nepaliSentences.forEach((sentenceData, index) => {
+                const button = document.createElement('button');
+                button.classList.add('grid-item-button', 'sentence');
+                button.textContent = sentenceData.english;
+                button.dataset.originalIndex = index;
+
+                button.addEventListener('click', () => {
+                    const newIndex = shuffledSentences.findIndex(s => s.nepali === sentenceData.nepali);
+                    displaySentence(newIndex);
+                    playSentenceAudio();
+                });
+                sentencesGrid.appendChild(button);
+            });
+        }
+
+
+        // --- MAIN APP NAVIGATION LOGIC ---
+        function showModule(moduleName) {
+            stopAllAudio(); // Stop any playing audio when switching modules
+
+            moduleContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            moduleTabs.forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+
+            document.getElementById(`${moduleName}Module`).classList.add('active');
+            document.querySelector(`.nav-tab-button[data-module="${moduleName}"]`).classList.add('active-tab');
+
+            // Re-initialize and display the current item for the newly active module
+            if (moduleName === 'alphabet') {
+                displayAlphabetCharacter(alphabetCurrentIndex);
+                // playAlphabetLetterSound(); // Optionally play on tab switch
+            } else if (moduleName === 'colors') {
+                displayColor(colorCurrentIndex);
+                // playColorAudio(); // Optionally play on tab switch
+            } else if (moduleName === 'sentences') {
+                displaySentence(sentenceCurrentIndex);
+                // playSentenceAudio(); // Optionally play on tab switch
+            }
+        }
+
+
+        // --- INITIALIZATION AND EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize all grids
+            createAlphabetGrid();
+            createColorGrid();
+            createSentencesGrid();
+
+            // Set initial displays
+            displayAlphabetCharacter(0);
+            displayColor(0);
+            displaySentence(0);
+
+            // Setup main navigation
+            moduleTabs.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const moduleToActivate = event.target.dataset.module;
+                    showModule(moduleToActivate);
+                });
+            });
+
+            // Alphabet Module Listeners
+            playAlphabetSoundBtn.addEventListener('click', playAlphabetLetterSound); // Changed function call
+            previousAlphabetBtn.addEventListener('click', () => {
+                alphabetCurrentIndex = (alphabetCurrentIndex - 1 + nepaliAlphabet.length) % nepaliAlphabet.length;
+                displayAlphabetCharacter(alphabetCurrentIndex);
+                playAlphabetLetterSound(); // Changed function call
+            });
+            nextAlphabetBtn.addEventListener('click', () => {
+                alphabetCurrentIndex = (alphabetCurrentIndex + 1) % nepaliAlphabet.length;
+                displayAlphabetCharacter(alphabetCurrentIndex);
+                playAlphabetLetterSound(); // Changed function call
+            });
+
+            // Colors Module Listeners
+            playColorSoundBtn.addEventListener('click', playColorAudio);
+            previousColorBtn.addEventListener('click', () => {
+                colorCurrentIndex = (colorCurrentIndex - 1 + nepaliColors.length) % nepaliColors.length;
+                displayColor(colorCurrentIndex);
+                playColorAudio();
+            });
+            nextColorBtn.addEventListener('click', () => {
+                colorCurrentIndex = (colorCurrentIndex + 1) % nepaliColors.length;
+                displayColor(colorCurrentIndex);
+                playColorAudio();
+            });
+
+            // Sentences Module Listeners
+            playSentenceSoundBtn.addEventListener('click', playSentenceAudio);
+            previousSentenceBtn.addEventListener('click', () => {
+                sentenceCurrentIndex = (sentenceCurrentIndex - 1 + shuffledSentences.length) % shuffledSentences.length;
+                displaySentence(sentenceCurrentIndex);
+                playSentenceAudio();
+            });
+            nextSentenceBtn.addEventListener('click', () => {
+                sentenceCurrentIndex = (sentenceCurrentIndex + 1) % shuffledSentences.length;
+                displaySentence(sentenceCurrentIndex);
+                playSentenceAudio();
+            });
+            shuffleSentencesBtn.addEventListener('click', () => {
+                shuffledSentences = shuffleArray([...nepaliSentences]);
+                sentenceCurrentIndex = 0;
+                displaySentence(sentenceCurrentIndex);
+                playSentenceAudio();
+            });
+
+            // Initially show the Alphabet module
+            showModule('alphabet');
+        });
+    </script>
+</body>
+</html>
